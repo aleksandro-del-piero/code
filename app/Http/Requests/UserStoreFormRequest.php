@@ -5,8 +5,9 @@ namespace App\Http\Requests;
 use App\DTO\UserRegisterDto;
 use App\Models\Position;
 use App\Models\User;
-use App\Rules\CheckRelevanceRegisterTokenRule;
 use App\Rules\UniqueUserPhoneRule;
+use App\Services\ApiValidationService;
+use App\Services\TokenService;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -22,7 +23,10 @@ class UserStoreFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        /** @var ApiValidationService $apiTokenValidationService */
+        $apiTokenValidationService = app()->make(ApiValidationService::class);
+
+        return $apiTokenValidationService->checkRelevanceHeaderApiToken($this->header('token'));
     }
 
     /**
@@ -33,7 +37,6 @@ class UserStoreFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'token' => ['required', new CheckRelevanceRegisterTokenRule()],
             'name' => ['required', 'min:2', 'max:60'],
             'email' => ['required', 'min:2', 'max:100', 'email', 'unique:'.User::class.',email'],
             'phone' => ['required', 'min:9', 'strong_phone', new UniqueUserPhoneRule()],
@@ -54,6 +57,11 @@ class UserStoreFormRequest extends FormRequest
      */
     public function getDto() : UserRegisterDto
     {
-        return new UserRegisterDto($this->validated());
+        return new UserRegisterDto(
+            array_merge(
+                $this->validated(),
+                ['token' => $this->header('token')]
+            )
+        );
     }
 }
