@@ -8,5 +8,9 @@ return [
         'resize-method' => 'fit',
         'extension' => '.jgp',
         'folder' => 'cropped-images'
+    ],
+    'image' => [
+        'min_width' => 75,
+        'min_height' => 75
     ]
 ];
