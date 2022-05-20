@@ -4,15 +4,26 @@
 namespace App\Services;
 
 
+use App\Contracts\StorageServiceInterface;
 use App\DTO\UserRegisterDto;
 use App\Events\RegisteredByApi;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * Class UserService
+ * @package App\Services
+ */
 class UserService
 {
+    public $storage;
+
+    public function __construct(StorageServiceInterface $storageService)
+    {
+        $this->storage = $storageService;
+    }
+
     /**
      * @param UserRegisterDto $userRegisterDto
      * @return mixed
@@ -24,7 +35,7 @@ class UserService
                 $userRegisterDto->all(),
                 [
                     'password' => Hash::make(Str::random()),
-                    'photo' => Storage::disk('public')->putFile('photos', $userRegisterDto->photo)
+                    'photo' => $this->storage->save($userRegisterDto->photo, 'photos')
                 ]
             )
         );

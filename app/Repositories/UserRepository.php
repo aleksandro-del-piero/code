@@ -46,7 +46,7 @@ class UserRepository extends BaseRepository
      * @param int $id
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
      */
-    public function getOneForApiShow(int $id)
+    public function getOneModelForApiShow(int $id)
     {
         return $this->getInstance()
             ->query()

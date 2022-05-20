@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Contracts\FileExternalServiceInterface;
+use App\Contracts\StorageServiceInterface;
+use App\Services\StorageService;
 use App\Services\TinyImageCropService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\Paginator;
@@ -17,7 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(FileExternalServiceInterface::class, TinyImageCropService::class);
+        $this->app->bind(StorageServiceInterface::class, StorageService::class);
     }
 
     /**
@@ -29,6 +32,5 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFive();
         JsonResource::withoutWrapping();
-        $this->app->bind(FileExternalServiceInterface::class, TinyImageCropService::class);
     }
 }

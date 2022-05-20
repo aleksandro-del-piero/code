@@ -37,11 +37,13 @@ class UserController extends Controller
                 throw new \Exception("The user_id must be an integer.", 400);
             }
 
-            if (is_null($userRepository->getOneForApiShow($id))) {
+            $user = $userRepository->getOneModelForApiShow($id);
+
+            if (is_null($user)) {
                 throw new ModelNotFoundException('User not found');
             }
 
-            return new UserResource($userRepository->getOneForApiShow($id));
+            return new UserResource($user);
         } catch (ModelNotFoundException $exception) {
             return response()->json([
                 "success" => false,
