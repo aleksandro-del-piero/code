@@ -16,10 +16,18 @@ class PositionController extends Controller
     /**
      * @param PositionRepository $positionRepository
      * @param Request $request
-     * @return PositionCollection
+     * @return PositionCollection|\Illuminate\Http\JsonResponse
      */
     public function __invoke(PositionRepository $positionRepository, Request $request)
     {
-        return new PositionCollection($positionRepository->getListPositionForApi());
+        $positions = $positionRepository->getListPositionForApi();
+
+        if ($positions->isEmpty()) {
+            return response()->json([
+                'success' => 'false',
+                'message' => 'Positions not found'
+            ], 422);
+        }
+        return new PositionCollection($positions);
     }
 }
