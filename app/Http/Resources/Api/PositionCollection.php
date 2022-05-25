@@ -21,14 +21,4 @@ class PositionCollection extends BaseResourceCollection
             'positions' => $this->collection,
         ];
     }
-
-    /**
-     * @return bool[]
-     */
-    public function addCustomParametersToResponse() : array
-    {
-        return [
-            'success2' => true,
-        ];
-    }
 }
